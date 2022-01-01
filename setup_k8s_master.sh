@@ -27,20 +27,19 @@ sudo apt install -y apt-transport-https ca-certificates curl software-properties
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
 sudo apt update
-sudo apt-cache policy docker-ce
 sudo apt install -y docker-ce
 
 #-------------- make docker use systemd not cgroupfs
 cat > /etc/docker/daemon.json <<EOF
-{
-  "exec-opts": ["native.cgroupdriver=systemd"],
-  "log-driver": "json-file",
-  "log-opts": {
-    "max-size": "100m"
-  },
-  "storage-driver": "overlay2"
-}
-EOF
+echo "{" >> /etc/docker/daemon.json
+echo "  \"exec-opts\": [\"native.cgroupdriver=systemd\"]," >> /etc/docker/daemon.json
+echo "  \"log-driver\": \"json-file\"," >> /etc/docker/daemon.json
+echo "  \"log-opts\": {" >> /etc/docker/daemon.json
+echo "    \"max-size\": \"100m\"" >> /etc/docker/daemon.json
+echo "  }," >> /etc/docker/daemon.json
+echo "  \"storage-driver\": \"overlay2\"" >> /etc/docker/daemon.json
+echo "}" >> /etc/docker/daemon.json
+
 sudo mkdir -p /etc/systemd/system/docker.service.d
 sudo systemctl daemon-reload
 sudo systemctl restart docker
@@ -48,8 +47,8 @@ sudo systemctl restart docker
 #------------- letting iptables see bridged traffic
 echo "br_netfilter" >> /etc/modules-load.d/k8s.conf
 
-echo "net.bridge.bridge-nf-call-ip6tables = 1" >> /etc/sysctl.d/k8s.conf
 echo "net.bridge.bridge-nf-call-iptables = 1" >> /etc/sysctl.d/k8s.conf
+echo "net.bridge.bridge-nf-call-ip6tables = 1" >> /etc/sysctl.d/k8s.conf
 
 sudo sysctl --system
 
