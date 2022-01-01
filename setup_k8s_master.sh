@@ -30,7 +30,6 @@ sudo apt update
 sudo apt install -y docker-ce
 
 #-------------- make docker use systemd not cgroupfs
-cat > /etc/docker/daemon.json <<EOF
 echo "{" >> /etc/docker/daemon.json
 echo "  \"exec-opts\": [\"native.cgroupdriver=systemd\"]," >> /etc/docker/daemon.json
 echo "  \"log-driver\": \"json-file\"," >> /etc/docker/daemon.json
