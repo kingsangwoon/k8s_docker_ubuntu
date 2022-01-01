@@ -45,10 +45,8 @@ sudo systemctl restart docker
 
 #------------- letting iptables see bridged traffic
 echo "br_netfilter" >> /etc/modules-load.d/k8s.conf
-
 echo "net.bridge.bridge-nf-call-iptables = 1" >> /etc/sysctl.d/k8s.conf
 echo "net.bridge.bridge-nf-call-ip6tables = 1" >> /etc/sysctl.d/k8s.conf
-
 sudo sysctl --system
 
 #------------- install kubeadm/kubelete/kubectl
