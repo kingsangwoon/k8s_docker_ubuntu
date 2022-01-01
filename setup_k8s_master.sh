@@ -30,6 +30,21 @@ sudo apt update
 sudo apt-cache policy docker-ce
 sudo apt install -y docker-ce
 
+#-------------- make docker use systemd not cgroupfs
+cat > /etc/docker/daemon.json <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
+EOF
+sudo mkdir -p /etc/systemd/system/docker.service.d
+sudo systemctl daemon-reload
+sudo systemctl restart docker
+
 #------------- letting iptables see bridged traffic
 echo "br_netfilter" >> /etc/modules-load.d/k8s.conf
 
