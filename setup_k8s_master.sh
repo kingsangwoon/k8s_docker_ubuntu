@@ -31,14 +31,11 @@ sudo apt-cache policy docker-ce
 sudo apt install -y docker-ce
 
 #------------- letting iptables see bridged traffic
-cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
-br_netfilter
-EOF
+echo "br_netfilter" >> /etc/modules-load.d/k8s.conf
 
-cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
-net.bridge.bridge-nf-call-ip6tables = 1
-net.bridge.bridge-nf-call-iptables = 1
-EOF
+echo "net.bridge.bridge-nf-call-ip6tables = 1" >> /etc/sysctl.d/k8s.conf
+echo "net.bridge.bridge-nf-call-iptables = 1" >> /etc/sysctl.d/k8s.conf
+
 sudo sysctl --system
 
 #------------- install kubeadm/kubelete/kubectl
