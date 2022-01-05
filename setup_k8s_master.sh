@@ -1,26 +1,13 @@
 #!/bin/bash
 
-#------------- disable swap partition
-swapoff -a
-echo "You must disable swap partition before installing k8s."
-read -p "Did you turn off swap? [yes/no] " answer
+# check the must-be-done priorities
+echo "1. disable swap"
+echo "2. static IP"
+echo "3. login as root"
+read -p "Did you perform above all things? (yes/no) " answer
 if [ ${answer} = yes ] || [ ${answer} = y ] ; then
         echo ""
-        else echo "disable swap first" && exit
-fi
-
-# static IP check
-read -p "Is the system's IP fixed for your stable k8s environment? (yes/no) " answer
-if [ ${answer} = yes ] || [ ${answer} = y ] ; then
-        echo ""
-        else echo "set IP static" && exit
-fi
-
-# login as root
-read -p "Did you login as root? (yes/no) " answer
-if [ ${answer} = yes ] || [ ${answer} = y ] ; then
-        echo ""
-        else echo "press \"sudo su\" first!" && exit
+        else echo "Make them done first!" && exit
 fi
 
 #------------- disable ufw
