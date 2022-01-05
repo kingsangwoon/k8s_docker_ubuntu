@@ -16,7 +16,7 @@ if [ ${answer} = yes ] || [ ${answer} = y ] ; then
         else echo "set IP static" && exit
 fi
 
-# static IP check
+# login as root
 read -p "Did you login as root? (yes/no) " answer
 if [ ${answer} = yes ] || [ ${answer} = y ] ; then
         echo ""
