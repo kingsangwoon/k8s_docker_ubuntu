@@ -80,6 +80,7 @@ ufw allow 80
 ufw allow 6443
 ufw allow 2379
 ufw allow 2380
+ufw allow 8080
 ufw allow 10250
 ufw allow 10251
 ufw allow 10252
