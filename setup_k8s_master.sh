@@ -62,7 +62,7 @@ kubeadm init --control-plane-endpoint "$ip:6443" --upload-certs --pod-network-ci
 #------------- allow current account to use kubectl without "sudo"
 mkdir -p /home/$user_name/.kube
 cp -i /etc/kubernetes/admin.conf /home/$user_name/.kube/config
-chown $(id -u):$(id -g) /home/$user_name/.kube/config
+chown $(id $user_name -u):$(id $user_name -g) /home/$user_name/.kube/config
 
 #------------- install CNI network addon
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
