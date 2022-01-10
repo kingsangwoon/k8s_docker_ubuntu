@@ -27,16 +27,16 @@ apt update
 apt install -y docker-ce
 
 #-------------- make docker use systemd not cgroupfs
-cat > /etc/docker/daemon.json <<EOF
-{
-  "exec-opts": ["native.cgroupdriver=systemd"],
-  "log-driver": "json-file",
-  "log-opts": {
-    "max-size": "100m"
-  },
-  "storage-driver": "overlay2"
-}
-EOF
+#cat > /etc/docker/daemon.json <<EOF
+#{
+#  "exec-opts": ["native.cgroupdriver=systemd"],
+#  "log-driver": "json-file",
+#  "log-opts": {
+#    "max-size": "100m"
+#  },
+#  "storage-driver": "overlay2"
+#}
+#EOF
 
 mkdir -p /etc/systemd/system/docker.service.d
 systemctl daemon-reload
@@ -57,7 +57,8 @@ apt-get install -y kubelet kubeadm kubectl
 apt-mark hold kubelet kubeadm kubectl
 
 #------------- create a cluster
-kubeadm init --control-plane-endpoint "$ip:6443" --upload-certs --pod-network-cidr "10.244.0.0/16"
+#kubeadm init --control-plane-endpoint "$ip:6443" --upload-certs --pod-network-cidr "10.244.0.0/16"
+kubeadm init --control-plane-endpoint "$ip:6443"
 
 #------------- allow current account to use kubectl without "sudo"
 mkdir -p /home/$user_name/.kube
@@ -65,7 +66,8 @@ cp -i /etc/kubernetes/admin.conf /home/$user_name/.kube/config
 chown $(id $user_name -u):$(id $user_name -g) /home/$user_name/.kube/config
 
 #------------- install CNI network addon
-kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+#kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 
 #------------- enable kubectl & kubeadm auto-completion
 echo "source <(kubectl completion bash)" >> /home/$user_name/.bashrc
