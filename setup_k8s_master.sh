@@ -10,6 +10,9 @@ if [ ${answer} = yes ] || [ ${answer} = y ] ; then
         else echo "Make them done first!" && exit
 fi
 
+read -p "Enter the system's IP : " ip
+read -p "Enter the user name you want to give administrator privilege : " user_name
+
 #------------- disable ufw
 systemctl stop ufw
 systemctl disable ufw
@@ -54,21 +57,20 @@ apt-get install -y kubelet kubeadm kubectl
 apt-mark hold kubelet kubeadm kubectl
 
 #------------- create a cluster
-read -p "Enter the system's IP : " ip
-kubeadm init --control-plane-endpoint "${ip}:6443" --upload-certs --pod-network-cidr "10.244.0.0/16"
+kubeadm init --control-plane-endpoint "$ip:6443" --upload-certs --pod-network-cidr "10.244.0.0/16"
 
 #------------- allow current account to use kubectl without "sudo"
-mkdir -p $HOME/.kube
-cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-chown $(id -u):$(id -g) $HOME/.kube/config
+mkdir -p /home/$user_name/.kube
+cp -i /etc/kubernetes/admin.conf /home/$user_name/.kube/config
+chown $(id -u):$(id -g) /home/$user_name/.kube/config
 
 #------------- install CNI network addon
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
 #------------- enable kubectl & kubeadm auto-completion
-echo "source <(kubectl completion bash)" >> ~/.bashrc
-echo "source <(kubeadm completion bash)" >> ~/.bashrc
-source ~/.bashrc
+echo "source <(kubectl completion bash)" >> /home/$user_name/.bashrc
+echo "source <(kubeadm completion bash)" >> /home/$user_name/.bashrc
+source /home/$user_name/.bashrc
 
 #------------- enable ssh connection && open port 80
 apt install openssh-server
