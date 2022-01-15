@@ -59,10 +59,12 @@ apt-mark hold kubelet kubeadm kubectl
 #------------- create a cluster
 kubeadm init --control-plane-endpoint "$ip:6443"
 
-#------------- allow current account to use kubectl without "sudo"
+#------------- enable kubectl in any accounts
 mkdir -p /home/$user_name/.kube
 cp -i /etc/kubernetes/admin.conf /home/$user_name/.kube/config
 chown $(id $user_name -u):$(id $user_name -g) /home/$user_name/.kube/config
+
+export KUBECONFIG=/etc/kubernetes/admin.conf
 
 #------------- install CNI network addon
 kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
@@ -70,7 +72,6 @@ kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl versio
 #------------- enable kubectl & kubeadm auto-completion
 echo "source <(kubectl completion bash)" >> /home/$user_name/.bashrc
 echo "source <(kubeadm completion bash)" >> /home/$user_name/.bashrc
-source /home/$user_name/.bashrc
 
 #------------- enable ssh connection && open port 80
 apt install openssh-server
