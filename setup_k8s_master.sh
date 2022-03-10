@@ -4,6 +4,7 @@
 echo "1. disable swap"
 echo "2. static IP"
 echo "3. login as root"
+echo "4. change the hostname. There should be no matching hostnames between each nodes"
 read -p "Did you perform above all things? (yes/no) " answer
 if [ ${answer} = yes ] || [ ${answer} = y ] ; then
         echo ""
