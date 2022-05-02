@@ -1,5 +1,4 @@
 # This script is a kubernetes environment setup for personal user
-### * Please note that I don't take any responsibilites for any problems that occur by executing this script. *
 
 ## Prerequisites
 #### 1. Disable swap
