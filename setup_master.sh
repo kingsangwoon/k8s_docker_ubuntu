@@ -83,16 +83,22 @@ kubeadm init --control-plane-endpoint "$ip:6443"
 #------------- enable kubectl in any accounts
 mkdir -p /home/$user_name/.kube
 cp -i /etc/kubernetes/admin.conf /home/$user_name/.kube/config
-chown $(id $user_name -u):$(id $user_name -g) /home/$user_name/.kube/config
+chown $user_name:$user_name /home/$user_name/.kube/config
 
-export KUBECONFIG=/etc/kubernetes/admin.conf
-
-#------------- install CNI network addon
-kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+mkdir -p $HOME/.kube
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
 
 #------------- enable kubectl & kubeadm auto-completion
 echo "source <(kubectl completion bash)" >> /home/$user_name/.bashrc
 echo "source <(kubeadm completion bash)" >> /home/$user_name/.bashrc
+
+echo "source <(kubectl completion bash)" >> $HOME/.bashrc
+echo "source <(kubeadm completion bash)" >> $HOME/.bashrc
+source $HOME/.bashrc
+
+#------------- install CNI network addon
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 
 #------------- enable ssh connection && open port 80
 apt install openssh-server
@@ -103,7 +109,6 @@ ufw allow 80
 ufw allow 6443
 ufw allow 2379
 ufw allow 2380
-ufw allow 8080
 ufw allow 10250
 ufw allow 10251
 ufw allow 10252

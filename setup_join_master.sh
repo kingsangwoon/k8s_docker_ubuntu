@@ -84,3 +84,19 @@ echo "source <(kubeadm completion bash)" >> /home/$user_name/.bashrc
 echo "source <(kubectl completion bash)" >> $HOME/.bashrc
 echo "source <(kubeadm completion bash)" >> $HOME/.bashrc
 source $HOME/.bashrc
+
+#------------- enable ssh connection && open port 80
+apt install openssh-server
+ufw allow 22
+ufw allow 80
+
+#------------- allow specific ports for k8s
+ufw allow 6443
+ufw allow 2379
+ufw allow 2380
+ufw allow 10250
+ufw allow 10251
+ufw allow 10252
+systemctl enable ufw
+systemctl start ufw
+ufw enable
