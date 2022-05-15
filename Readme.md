@@ -1,3 +1,7 @@
+# OS : Ubuntu 20.04.1
+# CNI : flannel
+# CRI : Docker engine with cri-dockerd.sock not containerd.sock
+
 # This script is a kubernetes environment setup for personal user
 
 ## Prerequisites
