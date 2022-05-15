@@ -78,7 +78,7 @@ apt-get install -y kubelet kubeadm kubectl
 apt-mark hold kubelet kubeadm kubectl
 
 #------------- create a cluster
-kubeadm init --control-plane-endpoint "$ip:6443"
+kubeadm init --control-plane-endpoint "${ip}:6443" --upload-certs --pod-network-cidr "10.244.0.0/16"
 
 #------------- enable kubectl in any accounts
 mkdir -p /home/$user_name/.kube
@@ -98,7 +98,7 @@ echo "source <(kubeadm completion bash)" >> $HOME/.bashrc
 source $HOME/.bashrc
 
 #------------- install CNI network addon
-kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
 #------------- enable ssh connection && open port 80
 apt install openssh-server
