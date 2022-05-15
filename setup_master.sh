@@ -44,7 +44,9 @@ systemctl daemon-reload
 systemctl restart docker
 
 #-------------- install cri-dockerd
-apt install golang-go
+apt install -y golang-go
+git clone https://github.com/Mirantis/cri-dockerd.git
+cd cri-dockerd
 mkdir bin
 cd src && go get && go build -o ../bin/cri-dockerd
 
@@ -55,6 +57,10 @@ sed -i -e 's,/usr/bin/cri-dockerd,/usr/local/bin/cri-dockerd,' /etc/systemd/syst
 systemctl daemon-reload
 systemctl enable cri-docker.service
 systemctl enable --now cri-docker.socket
+
+#------------- temporarily stop and disable containerd.sock
+systemctl stop containerd
+systemctl disable containerd
 
 #------------- letting iptables see bridged traffic
 echo "br_netfilter" >> /etc/modules-load.d/k8s.conf
