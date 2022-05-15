@@ -60,8 +60,8 @@ systemctl enable cri-docker.service
 systemctl enable --now cri-docker.socket
 
 #------------- temporarily stop and disable containerd.sock
-systemctl stop containerd
-systemctl disable containerd
+systemctl stop containerd.service
+systemctl disable containerd.service
 
 #------------- letting iptables see bridged traffic
 echo "br_netfilter" >> /etc/modules-load.d/k8s.conf
