@@ -5,14 +5,14 @@ echo "1. disable swap"
 echo "2. static IP"
 echo "3. login as root"
 echo "4. change the hostname. There should be no matching hostnames between each nodes"
-read -p "Did you perform above all things? (yes/no) " answer
+read -p -e "Did you perform above all things? (yes/no) " answer
 if [ ${answer} = yes ] || [ ${answer} = y ] ; then
         echo ""
         else echo "Make them done first!" && exit
 fi
 
-read -p "Enter the system's IP : " ip
-read -p "Enter the user name you want to give administrator privilege : " user_name
+read -p -e "Enter the system's IP : " ip
+read -p -e "Enter the user name you want to give administrator privilege : " user_name
 
 #------------- disable ufw
 systemctl stop ufw
