@@ -80,7 +80,20 @@ apt-get install -y kubelet kubeadm kubectl
 apt-mark hold kubelet kubeadm kubectl
 
 #------------- create a cluster
-kubeadm init --control-plane-endpoint "${ip}:6443" --upload-certs --pod-network-cidr "10.244.0.0/16"
+touch /home/$user_name/k8s_log.sh /home/$user_name/k8s_join_master.sh /home/$user_name/k8s_join_worker.sh
+chmod a+x /home/$user_name/k8s_log.sh /home/$user_name/k8s_join_master.sh /home/$user_name/k8s_join_worker.sh
+
+kubeadm init --control-plane-endpoint "${ip}:6443" --upload-certs --pod-network-cidr "10.244.0.0/16" >> /home/$user_name/k8s_log.sh
+
+cat << EOF >> /home/$user_name/k8s_join_master.sh
+#!/bin/bash
+$(sed -n '/kubeadm join/,/control/p' /home/$user_name/k8s_log.sh | head -n 3)
+EOF
+
+cat << EOF >> /home/$user_name/k8s_join_worker.sh
+#!/bin/bash
+$(sed -n '/kubeadm join/,/control/p' /home/$user_name/k8s_log.sh | tail -n 2)
+EOF
 
 #------------- enable kubectl in any accounts
 mkdir -p /home/$user_name/.kube
