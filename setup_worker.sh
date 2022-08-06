@@ -11,6 +11,7 @@ if [ ${answer} = yes ] || [ ${answer} = y ] ; then
         else echo "Make them done first!" && exit
 fi
 
+read -e -p "Do you wanna install nvidia container runtime? (yes/no) " answer
 read -e -p "Enter the system's IP : " ip
 read -e -p "Enter the user name you want to give administrator privilege : " user_name
 
@@ -44,6 +45,38 @@ EOF
 mkdir -p /etc/systemd/system/docker.service.d
 systemctl daemon-reload
 systemctl restart docker
+
+#-------------- install nvidia docker(nvidia container toolkit)
+if [ ${answer} = yes ] || [ ${answer} = y ] ; then
+
+	distribution=$(. /etc/os-release;echo $ID$VERSION_ID)
+	curl -s -L https://nvidia.github.io/nvidia-docker/gpgkey | sudo apt-key add -
+	curl -s -L https://nvidia.github.io/nvidia-docker/$distribution/nvidia-docker.list | sudo tee /etc/apt/sources.list.d/nvidia-docker.list
+ 	apt update && apt install -y nvidia-container-toolkit
+	systemctl restart docker
+
+	cat > /etc/docker/daemon.json <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2",
+  "default-runtime": "nvidia",
+   "runtimes": {
+      "nvidia": {
+	    "path": "/usr/bin/nvidia-container-runtime",
+	    "runtimeArgs": []
+      }
+   }
+}
+EOF
+	   
+	systemctl daemon-reload
+	systemctl restart docker
+
+fi
 
 #-------------- install cri-dockerd
 apt install -y golang-go
