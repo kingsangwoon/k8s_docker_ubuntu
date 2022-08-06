@@ -14,6 +14,10 @@ fi
 read -e -p "Enter the system's IP : " ip
 read -e -p "Enter the user name you want to give administrator privilege : " user_name
 
+#------------- install basic packages
+sed -i 's/1/0/g' /etc/apt/apt.conf.d/20auto-upgrades
+apt install -y net-tools nfs-common tmux
+
 #------------- disable ufw
 systemctl stop ufw
 systemctl disable ufw
