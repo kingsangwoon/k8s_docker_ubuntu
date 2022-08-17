@@ -18,3 +18,5 @@ helm repo add nvidia https://helm.ngc.nvidia.com/nvidia \
 helm install --wait --generate-name \
      -n gpu-operator --create-namespace \
      nvidia/gpu-operator
+
+# uninstall gpu-operator : helm delete -n gpu-operator $(helm list -n gpu-operator | grep gpu-operator | awk '{print $1}')
